@@ -1,6 +1,6 @@
 <template>
     <div>
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="handleSubmit" ref="form">
         <div class="form-group">
           <label>Title</label>
           <input v-model="todo.title" type="text" class="form-control" placeholder="Enter title" />
@@ -30,29 +30,50 @@
   <script>
   export default {
     props: {
-      todoItem: {
-        type: Object,
-        default: () => ({
-          title: '',
-          description: '',
-          status: 'WAITING',
-        }),
-      },
       isEdit: {
         type: Boolean,
         default: false,
       },
+      edit: {
+        type: Object,
+        default: () => ({
+          id: 0,
+          title: '',
+          description: '',
+          status: '',
+        }),
+      },
     },
     data() {
       return {
-        todo: { ...this.todoItem },
+        todo: { 
+          id: 0,
+          title: '',
+          description: '',
+          status: 'WAITING',
+        },
       };
     },
     methods: {
-      handleSubmit() {
-        this.$emit('submit', this.todo);
+      handleSubmit() {    
+        this.todo.id++;
+        this.$emit('submit',  this.todo);
+        this.clearForm();
+      },
+      clearForm() {
+        this.todo = { 
+          title: '',
+          description: '',
+          status: '',
+        };
       },
     },
+    watch: {
+    // whenever question changes, this function will run
+    edit: function (newVal) {
+      this.todo = newVal;
+    }
+  },
   };
   </script>
   
